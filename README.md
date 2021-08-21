@@ -31,7 +31,11 @@ jobs:
       - name: Check dockerfiles with Hadolint
         uses: essentialkaos/hadolint-action@v1
         with:
-          format: error
+          format: json
+          varbose: true
+          strict-labels: true
+          failure-threshold: warning
+          trusted-registry: repo.domain.com
           files: alpine311.docker alpine312.docker
 
 ```
