@@ -110,4 +110,4 @@ runs:
       shell: bash
       run: |
         echo "Running Hadolint…"
-        $GITHUB_ACTION_PATH/hadolint ${{steps.hadolint-set-options.outputs.options}} ${{inputs.files}}
+        $GITHUB_ACTION_PATH/hadolint ${{steps.hadolint-set-options.outputs.options}} ${{inputs.files}} && echo "Everything is OK!"
