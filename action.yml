@@ -1,0 +1,112 @@
+name: "EK Hadolint"
+description: "Action for checking dockerfiles with Hadolint"
+author: "ESSENTIALKAOS"
+
+branding:
+  icon: 'life-buoy'
+  color: 'blue'
+
+inputs:
+  files:
+    description: "List of dockerfiles to check"
+    required: true
+
+  version:
+    description: "Version of Hadolint"
+    required: false
+    default: "2.6.1"
+
+  format:
+    description: "The output format for the results (tty/json/checkstyle/codeclimate/gitlab_codeclimate/codacy/sonarqube)"
+    required: false
+
+  varbose:
+    description: "Enables verbose logging"
+    required: false
+
+  strict-labels:
+    description: "Do not permit labels other than specified in label-schema"
+    required: false
+
+  failure-threshold:
+    description: "Exit with failure code only when rules with a severity equal to or above given (error/warning/info/style/ignore/none)"
+    required: false
+
+  trusted-registry:
+    description: "A docker registry to allow to appear in FROM instructions"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - id: hadolint-install
+      name: Install Hadolint 
+      shell: bash
+      run: |
+        echo "::group::Downloading Hadolint…"
+
+        hl_url="https://github.com/hadolint/hadolint/releases/download/"
+
+        if [[ "$RUNNER_OS" == "Linux" ]] ; then
+          wget -O "$GITHUB_ACTION_PATH/hadolint" "${hl_url}/v${{inputs.version}}/hadolint-Linux-x86_64"
+        elif [[ "$RUNNER_OS" == "macOS" ]] ; then
+          wget -O "$GITHUB_ACTION_PATH/hadolint" "${hl_url}/v${{inputs.version}}/hadolint-Darwin-x86_64"
+        else
+          echo "$RUNNER_OS is not supported"
+          exit 1  
+        fi
+
+        chmod +x "$GITHUB_ACTION_PATH/hadolint"
+
+        echo "::endgroup::"
+
+    - id: hadolint-set-options
+      name: Set Hadolint options
+      shell: bash
+      run : |
+        declare -a options
+
+        if [[ -n "${{inputs.format}}" ]] ; then
+          options+=("-f ${{inputs.format}}")
+        fi
+
+        if [[ -n "${{inputs.verbose}}" ]] ; then
+          options+=("-V")
+        fi
+
+        if [[ -n "${{inputs.trusted-registry}}" ]] ; then
+          options+=("--trusted-registry ${{inputs.trusted-registry}}")
+        fi
+
+        if [[ -n "${{inputs.strict-labels}}" ]] ; then
+          options+=("--strict-labels")
+        fi
+
+        if [[ -n "${{inputs.severity}}" ]] ; then
+          options+=("--failure-threshold ${{inputs.severity}}")
+        fi
+
+        echo "::group::Hadolint configuration…"
+        if [[ ${#options[@]} -eq 0 ]] ; then
+          echo "Options: -no-set-"
+        else
+          echo "Options: ${options[@]}"
+        fi
+        echo "::endgroup::"
+
+        echo "::set-output name=options::${options[@]}"
+
+    - id: hadolint-version-print
+      name: Print Hadolint version info
+      shell: bash
+      run: |
+        echo "::group::Print Hadolint version…"
+        $GITHUB_ACTION_PATH/hadolint --version
+        echo "::endgroup::"
+
+    - id: hadolint-check
+      name: Check dockerfiles with Hadolint
+      shell: bash
+      run: |
+        echo "Running Hadolint…"
+        $GITHUB_ACTION_PATH/hadolint ${{steps.hadolint-set-options.outputs.options}} ${{inputs.files}}
