@@ -48,10 +48,11 @@ runs:
         hl_url="https://github.com/hadolint/hadolint/releases/download/"
 
         if [[ "$RUNNER_OS" == "Linux" ]] ; then
-          wget -O "$GITHUB_ACTION_PATH/hadolint" "${hl_url}/v${{inputs.version}}/hadolint-Linux-x86_64"
+          wget -O "$GITHUB_ACTION_PATH/hadolint" "${hl_url}/v${{inputs.version}}/hadolint-Linux-x86_64" 2>&1
         elif [[ "$RUNNER_OS" == "macOS" ]] ; then
-          wget -O "$GITHUB_ACTION_PATH/hadolint" "${hl_url}/v${{inputs.version}}/hadolint-Darwin-x86_64"
+          wget -O "$GITHUB_ACTION_PATH/hadolint" "${hl_url}/v${{inputs.version}}/hadolint-Darwin-x86_64" 2>&1
         else
+          echo "::endgroup::"
           echo "$RUNNER_OS is not supported"
           exit 1  
         fi
