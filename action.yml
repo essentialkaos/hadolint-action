@@ -4,7 +4,7 @@ author: "ESSENTIALKAOS"
 
 branding:
   icon: 'life-buoy'
-  color: 'blue'
+  color: 'white'
 
 inputs:
   files:
