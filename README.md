@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Code checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Check dockerfiles with Hadolint
         uses: essentialkaos/hadolint-action@v1
