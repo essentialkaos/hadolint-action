@@ -14,7 +14,7 @@ inputs:
   version:
     description: "Version of Hadolint"
     required: false
-    default: "2.8.0"
+    default: "2.9.2"
 
   format:
     description: "The output format for the results (tty/json/checkstyle/codeclimate/gitlab_codeclimate/codacy/sonarqube)"
