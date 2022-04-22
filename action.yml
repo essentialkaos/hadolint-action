@@ -14,7 +14,7 @@ inputs:
   version:
     description: "Version of Hadolint"
     required: false
-    default: "2.9.2"
+    default: "2.10.0"
 
   format:
     description: "The output format for the results (tty/json/checkstyle/codeclimate/gitlab_codeclimate/codacy/sonarqube)"
@@ -39,25 +39,33 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - id: hadolint-bin-cache
+      name: Cache Hadolint binaries
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/hadolint
+        key: ${{runner.os}}-hadolint-v${{inputs.version}}
+
     - id: hadolint-install
-      name: Install Hadolint 
+      name: Install Hadolint
       shell: bash
       run: |
         echo "::group::Downloading Hadolint…"
 
+        mkdir -p ~/.cache
         hl_url="https://github.com/hadolint/hadolint/releases/download/"
 
         if [[ "$RUNNER_OS" == "Linux" ]] ; then
-          wget -O "$GITHUB_ACTION_PATH/hadolint" "${hl_url}/v${{inputs.version}}/hadolint-Linux-x86_64" 2>&1
+          wget -O ~/.cache/hadolint "${hl_url}/v${{inputs.version}}/hadolint-Linux-x86_64" 2>&1
         elif [[ "$RUNNER_OS" == "macOS" ]] ; then
-          wget -O "$GITHUB_ACTION_PATH/hadolint" "${hl_url}/v${{inputs.version}}/hadolint-Darwin-x86_64" 2>&1
+          wget -O ~/.cache/hadolint "${hl_url}/v${{inputs.version}}/hadolint-Darwin-x86_64" 2>&1
         else
           echo "::endgroup::"
           echo "$RUNNER_OS is not supported"
           exit 1  
         fi
 
-        chmod +x "$GITHUB_ACTION_PATH/hadolint"
+        chmod +x ~/.cache/hadolint
 
         echo "::endgroup::"
 
@@ -102,7 +110,7 @@ runs:
       shell: bash
       run: |
         echo "::group::Print Hadolint version…"
-        $GITHUB_ACTION_PATH/hadolint --version
+        ~/.cache/hadolint --version
         echo "::endgroup::"
 
     - id: hadolint-check
@@ -110,4 +118,4 @@ runs:
       shell: bash
       run: |
         echo "Running Hadolint…"
-        $GITHUB_ACTION_PATH/hadolint ${{steps.hadolint-set-options.outputs.options}} ${{inputs.files}} && echo "Everything is OK!"
+        ~/.cache/hadolint ${{steps.hadolint-set-options.outputs.options}} ${{inputs.files}} && echo "Everything is OK!"

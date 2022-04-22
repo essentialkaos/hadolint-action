@@ -40,6 +40,16 @@ jobs:
 
 ```
 
+| Option | Description | Value |
+|--------|-------------|--------|
+| `files` | List of dockerfiles to check | _Paths_ |
+| `version` | Version of Hadolint | _Version in semver notation_ |
+| `format` | The output format for the results | `tty`<br/>`json`<br/>`checkstyle`<br/>`codeclimate`<br/>`gitlab_codeclimate`<br/>`codacy`<br/>`sonarqube` |
+| `varbose` | Enables verbose logging | _Boolean_ |
+| `strict-labels` | Do not permit labels other than specified in label-schema | _Boolean_ |
+| `failure-threshold` | Exit with failure code only when rules with a severity equal to or above given | `error`<br/>`warning`<br/>`info`<br/>`style`<br/>`ignore`<br/>`none` |
+| `trusted-registry` | A docker registry to allow to appear in FROM instructions | _String_ |
+
 ### License
 
 [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
