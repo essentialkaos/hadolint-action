@@ -20,8 +20,8 @@ inputs:
     description: "The output format for the results (tty/json/checkstyle/codeclimate/gitlab_codeclimate/codacy/sonarqube)"
     required: false
 
-  varbose:
-    description: "Enables verbose logging"
+  verbose:
+    description: "Enable verbose logging"
     required: false
 
   strict-labels:
@@ -40,11 +40,11 @@ runs:
   using: "composite"
   steps:
     - id: hadolint-bin-cache
-      name: Cache Hadolint binaries
+      name: Cache Hadolint binary
       uses: actions/cache@v3
       with:
         path: ~/.cache/hadolint
-        key: ${{runner.os}}-hadolint-v${{inputs.version}}
+        key: ${{runner.os}}-ek-hadolint-action-v${{inputs.version}}
 
     - id: hadolint-install
       name: Install Hadolint
