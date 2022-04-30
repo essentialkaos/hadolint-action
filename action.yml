@@ -53,7 +53,7 @@ runs:
       run: |
         # [hadolint-install]
 
-        echo -e "::group::\e[34mDownloading Hadolint…\e[0m"
+        echo -e "::group::\033[34mDownloading Hadolint…\033[0m"
 
         mkdir -p ~/.cache
         hl_url="https://github.com/hadolint/hadolint/releases/download/"
@@ -100,7 +100,7 @@ runs:
           options+=("--failure-threshold ${{inputs.severity}}")
         fi
 
-        echo -e "::group::\e[34mHadolint configuration…\e[0m"
+        echo -e "::group::\033[34mHadolint configuration…\033[0m"
         if [[ ${#options[@]} -eq 0 ]] ; then
           echo "Options: -no-set-"
         else
@@ -116,7 +116,7 @@ runs:
       run: |
         # [hadolint-version-print]
 
-        echo -e "::group::\e[34mPrint Hadolint version…\e[0m"
+        echo -e "::group::\033[34mPrint Hadolint version…\033[0m"
         ~/.cache/hadolint --version
         echo "::endgroup::"
 
@@ -126,5 +126,5 @@ runs:
       run: |
         # [hadolint-check]
 
-        echo -e "\e[34mRunning Hadolint…\e[0m"
+        echo -e "\033[34mRunning Hadolint…\033[0m"
         ~/.cache/hadolint ${{steps.hadolint-set-options.outputs.options}} ${{inputs.files}} && echo "Everything is OK!"
