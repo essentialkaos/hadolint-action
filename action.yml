@@ -41,7 +41,7 @@ runs:
   steps:
     - id: hadolint-bin-cache
       name: Cache Hadolint binary
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.cache/hadolint
         key: ${{runner.os}}-ek-hadolint-action-v${{inputs.version}}
